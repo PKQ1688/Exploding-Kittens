@@ -1,0 +1,135 @@
+.player-hand {
+  background: #f8f9fa;
+  border: 2px solid #dee2e6;
+  border-radius: 12px;
+  padding: 16px;
+  margin: 0;
+  transition: all 0.3s ease;
+  width: 100%;
+}
+
+.player-hand--current {
+  border-color: #007bff;
+  background: linear-gradient(135deg, #e3f2fd 0%, #f8f9fa 100%);
+  box-shadow: 0 4px 12px rgba(0, 123, 255, 0.2);
+}
+
+.player-hand--dead {
+  opacity: 0.6;
+  border-color: #dc3545;
+  background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%);
+}
+
+.player-hand__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #dee2e6;
+}
+
+.player-hand__name {
+  margin: 0;
+  font-size: 1.2em;
+  color: #333;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.player-hand--current .player-hand__name {
+  color: #007bff;
+  font-weight: bold;
+}
+
+.player-hand--dead .player-hand__name {
+  color: #dc3545;
+  text-decoration: line-through;
+}
+
+.player-hand__current-indicator {
+  font-size: 1.2em;
+  animation: pulse 2s infinite;
+}
+
+.player-hand__dead-indicator {
+  font-size: 1.2em;
+}
+
+.player-hand__card-count {
+  background: #6c757d;
+  color: white;
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 0.9em;
+  font-weight: bold;
+}
+
+.player-hand--current .player-hand__card-count {
+  background: #007bff;
+}
+
+.player-hand--dead .player-hand__card-count {
+  background: #dc3545;
+}
+
+.player-hand__cards {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: flex-start;
+  align-items: flex-start;
+}
+
+.player-hand__empty {
+  color: #6c757d;
+  font-style: italic;
+  text-align: center;
+  padding: 20px;
+  width: 100%;
+  border: 2px dashed #dee2e6;
+  border-radius: 8px;
+  background: #f8f9fa;
+}
+
+/* 动画效果 */
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  .player-hand {
+    padding: 12px;
+    margin: 4px;
+  }
+  
+  .player-hand__header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+  
+  .player-hand__name {
+    font-size: 1.1em;
+  }
+  
+  .player-hand__cards {
+    justify-content: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .player-hand__cards {
+    gap: 4px;
+  }
+}

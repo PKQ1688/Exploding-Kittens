@@ -1,0 +1,369 @@
+.app {
+  width: 100%;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+  padding: 0;
+  margin: 0;
+  font-family: 'Arial', sans-serif;
+  overflow-x: hidden;
+}
+
+/* 设置界面样式 */
+.setup-screen {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 80vh;
+  color: white;
+}
+
+.setup-screen h1 {
+  font-size: 3em;
+  margin-bottom: 2rem;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+  background: linear-gradient(45deg, #ff6b6b, #feca57, #48dbfb, #ff9ff3);
+  background-size: 400% 400%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: gradientShift 3s ease infinite;
+}
+
+@keyframes gradientShift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.setup-form {
+  background: rgba(255, 255, 255, 0.1);
+  padding: 2rem;
+  border-radius: 16px;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  min-width: 400px;
+}
+
+.setup-form h2 {
+  margin-top: 0;
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+.players-setup {
+  margin-bottom: 2rem;
+}
+
+.players-setup h3 {
+  margin-bottom: 1rem;
+  color: #feca57;
+}
+
+.player-input {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 10px;
+  align-items: center;
+}
+
+.player-input input {
+  flex: 1;
+  padding: 10px;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  background: rgba(255, 255, 255, 0.9);
+}
+
+.player-input button {
+  padding: 10px 15px;
+  background: #ff4757;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.player-input button:hover {
+  background: #ff3838;
+}
+
+.start-button {
+  width: 100%;
+  padding: 15px;
+  background: linear-gradient(45deg, #28a745, #20c997);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-size: 1.2rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
+}
+
+.start-button:hover {
+  background: linear-gradient(45deg, #218838, #1ea080);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(40, 167, 69, 0.4);
+}
+
+/* 游戏结束界面样式 */
+.game-over-screen {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 80vh;
+  color: white;
+  text-align: center;
+}
+
+.game-over-screen h1 {
+  font-size: 3em;
+  margin-bottom: 1rem;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.game-over-screen h2 {
+  font-size: 2em;
+  margin-bottom: 2rem;
+  color: #feca57;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+.game-over-screen button {
+  padding: 15px 30px;
+  background: linear-gradient(45deg, #007bff, #0056b3);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-size: 1.2rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(0, 123, 255, 0.3);
+}
+
+.game-over-screen button:hover {
+  background: linear-gradient(45deg, #0056b3, #004085);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 123, 255, 0.4);
+}
+
+/* 选中卡牌操作区域 */
+.selected-card-actions {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(0, 0, 0, 0.9);
+  color: white;
+  padding: 20px;
+  border-radius: 12px;
+  display: flex;
+  gap: 15px;
+  z-index: 1000;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+}
+
+.selected-card-actions button {
+  padding: 12px 20px;
+  border: none;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.selected-card-actions button:first-child {
+  background: linear-gradient(45deg, #28a745, #20c997);
+  color: white;
+}
+
+.selected-card-actions button:first-child:hover {
+  background: linear-gradient(45deg, #218838, #1ea080);
+  transform: translateY(-2px);
+}
+
+.selected-card-actions button:last-child {
+  background: linear-gradient(45deg, #6c757d, #5a6268);
+  color: white;
+}
+
+.selected-card-actions button:last-child:hover {
+  background: linear-gradient(45deg, #5a6268, #495057);
+  transform: translateY(-2px);
+}
+
+/* 玩家容器 */
+.players-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+  gap: 16px;
+  margin: 0;
+  padding: 20px;
+  width: 100%;
+}
+
+/* 连接界面样式 */
+.connecting-screen {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 80vh;
+  color: white;
+  text-align: center;
+}
+
+.connecting-screen h1 {
+  font-size: 3em;
+  margin-bottom: 2rem;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+  background: linear-gradient(45deg, #ff6b6b, #feca57, #48dbfb, #ff9ff3);
+  background-size: 400% 400%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: gradientShift 3s ease infinite;
+}
+
+.connecting-screen p {
+  font-size: 1.2em;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.connection-error {
+  background: rgba(255, 71, 87, 0.2);
+  border: 2px solid #ff4757;
+  border-radius: 12px;
+  padding: 20px;
+  margin-top: 20px;
+  text-align: center;
+}
+
+.connection-error p {
+  margin-bottom: 15px;
+  color: #ff4757;
+}
+
+.connection-error button {
+  padding: 10px 20px;
+  background: linear-gradient(45deg, #007bff, #0056b3);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.connection-error button:hover {
+  background: linear-gradient(45deg, #0056b3, #004085);
+  transform: translateY(-2px);
+}
+
+/* 本地模式选项 */
+.local-mode-option {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+}
+
+.local-mode-option button {
+  padding: 12px 20px;
+  background: linear-gradient(45deg, #6c757d, #5a6268);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(108, 117, 125, 0.3);
+}
+
+.local-mode-option button:hover {
+  background: linear-gradient(45deg, #5a6268, #495057);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(108, 117, 125, 0.4);
+}
+
+/* 返回按钮样式 */
+.back-button {
+  width: 100%;
+  padding: 12px;
+  background: linear-gradient(45deg, #6c757d, #5a6268);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-size: 1.1em;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(108, 117, 125, 0.3);
+  margin-top: 10px;
+}
+
+.back-button:hover {
+  background: linear-gradient(45deg, #5a6268, #495057);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(108, 117, 125, 0.4);
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  .app {
+    padding: 10px;
+  }
+
+  .setup-form {
+    min-width: 300px;
+    padding: 1.5rem;
+  }
+
+  .setup-screen h1 {
+    font-size: 2.5em;
+  }
+
+  .connecting-screen h1 {
+    font-size: 2.5em;
+  }
+
+  .players-container {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .selected-card-actions {
+    flex-direction: column;
+    width: 90%;
+    max-width: 300px;
+  }
+
+  .local-mode-option {
+    position: static;
+    text-align: center;
+    margin-top: 20px;
+  }
+}
+
+@media (max-width: 480px) {
+  .setup-form {
+    min-width: 250px;
+    padding: 1rem;
+  }
+
+  .setup-screen h1 {
+    font-size: 2em;
+  }
+
+  .player-input {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .player-input button {
+    width: 100%;
+  }
+}

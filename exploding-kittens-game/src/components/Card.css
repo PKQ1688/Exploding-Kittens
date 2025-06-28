@@ -1,0 +1,175 @@
+.card {
+  background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+  border: 3px solid #ddd;
+  border-radius: 12px;
+  padding: 12px;
+  margin: 4px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow: hidden;
+}
+
+.card--small {
+  width: 80px;
+  height: 120px;
+  padding: 8px;
+}
+
+.card--medium {
+  width: 120px;
+  height: 180px;
+  padding: 12px;
+}
+
+.card--large {
+  width: 160px;
+  height: 240px;
+  padding: 16px;
+}
+
+.card--clickable {
+  cursor: pointer;
+}
+
+.card--clickable:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+.card--playable {
+  border-color: #28a745;
+  box-shadow: 0 4px 8px rgba(40, 167, 69, 0.3);
+}
+
+.card--playable:hover {
+  border-color: #1e7e34;
+  box-shadow: 0 8px 16px rgba(40, 167, 69, 0.5);
+}
+
+.card--selected {
+  border-color: #007bff;
+  box-shadow: 0 4px 8px rgba(0, 123, 255, 0.5);
+  transform: translateY(-2px);
+}
+
+.card__header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.card__emoji {
+  font-size: 2em;
+  margin-bottom: 4px;
+}
+
+.card--small .card__emoji {
+  font-size: 1.2em;
+}
+
+.card--large .card__emoji {
+  font-size: 2.5em;
+}
+
+.card__name {
+  font-weight: bold;
+  text-align: center;
+  font-size: 0.9em;
+  color: #333;
+  line-height: 1.2;
+}
+
+.card--small .card__name {
+  font-size: 0.7em;
+}
+
+.card--large .card__name {
+  font-size: 1.1em;
+}
+
+.card__description {
+  font-size: 0.75em;
+  color: #666;
+  text-align: center;
+  line-height: 1.3;
+  flex-grow: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.card--small .card__description {
+  font-size: 0.6em;
+}
+
+.card--large .card__description {
+  font-size: 0.85em;
+}
+
+/* 特殊卡牌样式 */
+.card[style*="border-color: #ff4444"] {
+  background: linear-gradient(135deg, #ffe6e6 0%, #ffcccc 100%);
+}
+
+.card[style*="border-color: #44ff44"] {
+  background: linear-gradient(135deg, #e6ffe6 0%, #ccffcc 100%);
+}
+
+.card[style*="border-color: #ff8844"] {
+  background: linear-gradient(135deg, #fff2e6 0%, #ffe6cc 100%);
+}
+
+.card[style*="border-color: #ff4488"] {
+  background: linear-gradient(135deg, #ffe6f2 0%, #ffcce6 100%);
+}
+
+.card[style*="border-color: #4488ff"] {
+  background: linear-gradient(135deg, #e6f2ff 0%, #cce6ff 100%);
+}
+
+.card[style*="border-color: #8844ff"] {
+  background: linear-gradient(135deg, #f2e6ff 0%, #e6ccff 100%);
+}
+
+.card[style*="border-color: #44ffff"] {
+  background: linear-gradient(135deg, #e6ffff 0%, #ccffff 100%);
+}
+
+.card[style*="border-color: #ffff44"] {
+  background: linear-gradient(135deg, #ffffcc 0%, #ffff99 100%);
+}
+
+/* 动画效果 */
+@keyframes cardDraw {
+  from {
+    opacity: 0;
+    transform: scale(0.8) rotate(-10deg);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) rotate(0deg);
+  }
+}
+
+.card--new {
+  animation: cardDraw 0.5s ease-out;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  .card--medium {
+    width: 100px;
+    height: 150px;
+    padding: 10px;
+  }
+  
+  .card--large {
+    width: 140px;
+    height: 210px;
+    padding: 14px;
+  }
+}
