@@ -2,15 +2,16 @@
 
 ## 一键启动/停止脚本
 
-为了方便您快速启动和停止爆炸小猫游戏，我们提供了跨平台的一键脚本。
+为了方便您快速启动和停止爆炸小猫游戏，我们提供了简单的一键脚本。
 
 ### 📋 系统要求
 
 - **Node.js** 16.0 或更高版本
 - **npm** (通常随 Node.js 一起安装)
 - **现代浏览器** (Chrome, Firefox, Safari, Edge)
+- **操作系统**: macOS 或 Linux
 
-### 🖥️ macOS / Linux 用户
+### 🖥️ 使用方法
 
 #### 启动游戏
 ```bash
@@ -22,27 +23,12 @@
 ./stop-game.sh
 ```
 
-### 🪟 Windows 用户
-
-#### 启动游戏
-双击 `start-game.bat` 或在命令行中运行：
-```cmd
-start-game.bat
-```
-
-#### 停止游戏
-双击 `stop-game.bat` 或在命令行中运行：
-```cmd
-stop-game.bat
-```
-
 ## 🎯 脚本功能
 
-### 启动脚本 (`start-game.sh` / `start-game.bat`)
+### 启动脚本 (`start-game.sh`)
 
 ✅ **自动检查环境**
 - 检查 Node.js 和 npm 是否已安装
-- 验证版本兼容性
 
 ✅ **智能依赖管理**
 - 自动安装前端依赖 (如果未安装)
@@ -55,25 +41,20 @@ stop-game.bat
 
 ✅ **用户友好**
 - 自动打开浏览器
-- 实时状态反馈
-- 详细的启动日志
+- 简洁的状态反馈
 
-### 停止脚本 (`stop-game.sh` / `stop-game.bat`)
+### 停止脚本 (`stop-game.sh`)
 
 🛑 **智能进程管理**
 - 查找并停止所有相关进程
 - 清理端口占用
-- 强制终止顽固进程
 
 🧹 **彻底清理**
-- 清理 Vite 开发服务器
-- 清理 ts-node 后端进程
+- 清理开发服务器进程
 - 清理端口占用进程
 
-📊 **详细反馈**
+📊 **简洁反馈**
 - 显示停止的进程数量
-- 保留日志文件供调试
-- 清理状态报告
 
 ## 📁 文件结构
 
@@ -81,15 +62,13 @@ stop-game.bat
 
 ```
 exploding-kittens-game/
-├── logs/                   # 日志目录
+├── logs/                   # 日志目录 (运行时生成，不提交到git)
 │   ├── server.log         # 后端服务器日志
 │   ├── client.log         # 前端开发服务器日志
-│   ├── server.pid         # 服务器进程ID (仅 Unix)
-│   └── client.pid         # 前端进程ID (仅 Unix)
-├── start-game.sh          # Unix 启动脚本
-├── stop-game.sh           # Unix 停止脚本
-├── start-game.bat         # Windows 启动脚本
-└── stop-game.bat          # Windows 停止脚本
+│   ├── server.pid         # 服务器进程ID
+│   └── client.pid         # 前端进程ID
+├── start-game.sh          # 启动脚本
+└── stop-game.sh           # 停止脚本
 ```
 
 ## 🌐 访问地址
@@ -140,10 +119,6 @@ tail -f logs/server.log
 
 # 查看前端日志
 tail -f logs/client.log
-
-# Windows 用户
-type logs\server.log
-type logs\client.log
 ```
 
 ## 🎮 开始游戏

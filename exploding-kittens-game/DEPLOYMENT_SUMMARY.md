@@ -8,9 +8,9 @@
 - ✅ 仓库地址: `git@github.com:PKQ1688/Exploding-Kittens.git`
 
 ### 2. 一键启动/停止脚本
-- ✅ 创建了跨平台启动脚本 (`start-game.sh` / `start-game.bat`)
-- ✅ 创建了跨平台停止脚本 (`stop-game.sh` / `stop-game.bat`)
-- ✅ 支持 macOS、Linux 和 Windows 系统
+- ✅ 创建了简洁的启动脚本 (`start-game.sh`)
+- ✅ 创建了简洁的停止脚本 (`stop-game.sh`)
+- ✅ 支持 macOS 和 Linux 系统
 - ✅ 自动环境检查和依赖安装
 - ✅ 智能进程管理和端口清理
 
@@ -23,26 +23,14 @@
 
 ### 快速启动游戏
 
-#### macOS / Linux 用户
 ```bash
 ./start-game.sh
 ```
 
-#### Windows 用户
-```cmd
-start-game.bat
-```
-
 ### 停止游戏
 
-#### macOS / Linux 用户
 ```bash
 ./stop-game.sh
-```
-
-#### Windows 用户
-```cmd
-stop-game.bat
 ```
 
 ## 🌐 访问地址
@@ -60,10 +48,8 @@ exploding-kittens-game/
 │   ├── server/                 # Node.js 后端源码
 │   └── public/                 # 静态资源
 ├── 🚀 启动脚本
-│   ├── start-game.sh          # Unix 启动脚本
-│   ├── start-game.bat         # Windows 启动脚本
-│   ├── stop-game.sh           # Unix 停止脚本
-│   └── stop-game.bat          # Windows 停止脚本
+│   ├── start-game.sh          # 启动脚本
+│   └── stop-game.sh           # 停止脚本
 ├── 📖 文档
 │   ├── README.md              # 项目说明
 │   ├── QUICK_START.md         # 快速启动指南
@@ -74,11 +60,11 @@ exploding-kittens-game/
 │   ├── vite.config.ts         # Vite 构建配置
 │   └── tsconfig.json          # TypeScript 配置
 └── 📊 运行时文件
-    └── logs/                  # 日志目录 (运行时生成)
+    └── logs/                  # 日志目录 (运行时生成，不提交到git)
         ├── server.log         # 后端日志
         ├── client.log         # 前端日志
-        ├── server.pid         # 服务器进程ID (Unix)
-        └── client.pid         # 前端进程ID (Unix)
+        ├── server.pid         # 服务器进程ID
+        └── client.pid         # 前端进程ID
 ```
 
 ## 🔧 脚本功能特性
@@ -126,7 +112,7 @@ exploding-kittens-game/
 - **Node.js** 16.0 或更高版本
 - **npm** (通常随 Node.js 安装)
 - **现代浏览器** (Chrome, Firefox, Safari, Edge)
-- **操作系统**: macOS, Linux, Windows
+- **操作系统**: macOS, Linux
 
 ## 🔧 故障排除
 
@@ -166,8 +152,7 @@ exploding-kittens-game/
 
 1. **立即开始游戏**
    ```bash
-   ./start-game.sh  # macOS/Linux
-   start-game.bat   # Windows
+   ./start-game.sh
    ```
 
 2. **邀请朋友一起玩**
