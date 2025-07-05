@@ -144,3 +144,10 @@ room-test.html
 restore-*.sh
 *-summary.md
 final-*.md
+
+# Claude AI 相关文件
+.claude/
+CLAUDE.md
+
+.claude
+CLAUDE.md
