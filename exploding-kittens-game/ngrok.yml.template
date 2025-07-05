@@ -1,0 +1,12 @@
+version: "3"
+agent:
+  authtoken: YOUR_NGROK_AUTHTOKEN_HERE
+tunnels:
+  backend:
+    addr: 3001
+    proto: http
+    host_header: "localhost:3001"
+  frontend:
+    addr: 5173
+    proto: http
+    host_header: "localhost:5173"
