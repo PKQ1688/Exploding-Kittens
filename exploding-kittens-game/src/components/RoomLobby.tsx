@@ -34,10 +34,16 @@ const RoomLobby: React.FC<RoomLobbyProps> = ({
   useEffect(() => {
     // 监听玩家加入
     socketService.on('player_joined', (player: Player) => {
-      setRoom(prev => ({
-        ...prev,
-        players: [...prev.players, player]
-      }));
+      setRoom(prev => {
+        // 检查玩家是否已经存在，避免重复添加
+        if (prev.players.some(p => p.id === player.id)) {
+          return prev;
+        }
+        return {
+          ...prev,
+          players: [...prev.players, player]
+        };
+      });
     });
 
     // 监听玩家离开
@@ -195,6 +201,7 @@ const RoomLobby: React.FC<RoomLobbyProps> = ({
             <li>🎯 目标：成为最后存活的玩家</li>
             <li>💥 避免抽到爆炸小猫卡，否则你就出局了</li>
             <li>🛡️ 使用拆弹卡来拆除爆炸小猫</li>
+            <li>🎴 每回合先打牌（可选），然后必须抽牌结束回合</li>
             <li>⚔️ 使用攻击卡让下一个玩家连续行动2回合</li>
             <li>🔮 使用预知未来卡查看顶部3张牌</li>
             <li>🐱 使用成对的猫咪卡偷取其他玩家的牌</li>

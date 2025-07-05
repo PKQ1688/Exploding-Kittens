@@ -15,6 +15,9 @@ interface ServerToClientEvents {
   card_played: (playerId: string, cardId: string, targetPlayerId?: string) => void;
   card_drawn: (playerId: string) => void;
   turn_ended: (playerId: string) => void;
+  action_pending: (action: { playerId: string; cardId: string; targetPlayerId?: string; timeRemaining: number }) => void;
+  action_noped: (nopedBy: string) => void;
+  action_resolved: () => void;
 }
 
 // 客户端事件类型
@@ -28,24 +31,58 @@ interface ClientToServerEvents {
   play_card: (cardId: string, targetPlayerId?: string) => void;
   draw_card: () => void;
   end_turn: () => void;
+  play_nope: (cardId: string) => void;
 }
 
 class SocketService {
   private socket: Socket<ServerToClientEvents, ClientToServerEvents> | null = null;
   private listeners: Map<string, Function[]> = new Map();
 
+  private getServerUrl(): string {
+    // 检查是否有环境变量指定的服务器URL
+    const envServerUrl = (window as any).__SERVER_URL__;
+    if (envServerUrl) {
+      return envServerUrl;
+    }
+
+    // 如果是通过ngrok访问（包含ngrok域名），使用相对路径
+    if (window.location.hostname.includes('ngrok')) {
+      return window.location.origin;
+    }
+
+    // 如果是开发环境，总是使用localhost
+    if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+      return 'http://localhost:3001';
+    }
+
+    // 如果是局域网访问，使用当前主机的3001端口
+    return `http://${window.location.hostname}:3001`;
+  }
+
   connect(): Promise<void> {
     return new Promise((resolve, reject) => {
-      this.socket = io('http://localhost:3001');
+      // 自动检测服务器地址
+      const serverUrl = this.getServerUrl();
+      // console.log('尝试连接到服务器:', serverUrl);
+      this.socket = io(serverUrl, {
+        timeout: 10000,
+        reconnection: true,
+        reconnectionAttempts: 3,
+        reconnectionDelay: 1000
+      });
       
       this.socket.on('connect', () => {
-        console.log('连接到服务器');
+        // console.log('连接到服务器成功，Socket ID:', this.socket?.id);
         resolve();
       });
 
       this.socket.on('connect_error', (error) => {
-        console.error('连接失败:', error);
+        // console.error('连接失败详细信息:', error);
         reject(error);
+      });
+
+      this.socket.on('disconnect', (reason) => {
+        // console.log('与服务器断开连接:', reason);
       });
 
       // 设置事件监听器
@@ -68,7 +105,8 @@ class SocketService {
     const events: (keyof ServerToClientEvents)[] = [
       'room_list', 'room_joined', 'room_left', 'player_joined', 'player_left',
       'player_ready', 'game_started', 'game_state_update', 'error',
-      'card_played', 'card_drawn', 'turn_ended'
+      'card_played', 'card_drawn', 'turn_ended',
+      'action_pending', 'action_noped', 'action_resolved'
     ];
 
     events.forEach(event => {
@@ -101,8 +139,11 @@ class SocketService {
 
   // 发送事件到服务器
   emit<K extends keyof ClientToServerEvents>(event: K, ...args: Parameters<ClientToServerEvents[K]>) {
-    if (this.socket) {
+    // console.log('发送Socket事件:', event, args);
+    if (this.socket && this.socket.connected) {
       (this.socket.emit as any)(event, ...args);
+    } else {
+      // console.error('Socket未连接，无法发送事件:', event);
     }
   }
 
@@ -112,6 +153,7 @@ class SocketService {
   }
 
   createRoom(roomName: string, playerName: string) {
+    // console.log('发送创建房间请求:', { roomName, playerName });
     this.emit('create_room', roomName, playerName);
   }
 
@@ -143,8 +185,16 @@ class SocketService {
     this.emit('end_turn');
   }
 
+  playNope(cardId: string) {
+    this.emit('play_nope', cardId);
+  }
+
   isConnected(): boolean {
     return this.socket?.connected || false;
+  }
+
+  getSocketId(): string | undefined {
+    return this.socket?.id;
   }
 }
 

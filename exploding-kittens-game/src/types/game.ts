@@ -38,6 +38,7 @@ export interface Player {
 // 游戏阶段常量
 export const GamePhase = {
   SETUP: 'setup',
+  WAITING: 'waiting',
   PLAYING: 'playing',
   GAME_OVER: 'game_over'
 } as const;
@@ -55,6 +56,13 @@ export interface GameState {
   turnCount: number;
   attackTurnsRemaining: number;
   lastAction: string;
+  futureCards?: Card[]; // 透视未来卡显示的卡牌
+  pendingAction?: {
+    playerId: string;
+    cardId: string;
+    targetPlayerId?: string;
+    timeoutAt: number;
+  }; // 等待否定卡响应的行动
 }
 
 // 卡牌效果接口

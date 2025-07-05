@@ -54,6 +54,13 @@ export interface GameState {
   turnCount: number;
   attackTurnsRemaining: number;
   lastAction: string;
+  futureCards?: Card[]; // 透视未来卡显示的卡牌
+  pendingAction?: {
+    playerId: string;
+    cardId: string;
+    targetPlayerId?: string;
+    timeoutAt: number;
+  }; // 等待否定卡响应的行动
 }
 
 export interface Room {
@@ -61,7 +68,7 @@ export interface Room {
   name: string;
   players: Player[];
   gameState: GameState | null;
-  maxPlayers: number;
+  maxPlayers: number; // 最大玩家数，建议4人
   isGameStarted: boolean;
   createdAt: Date;
 }
@@ -80,6 +87,9 @@ export interface ServerToClientEvents {
   card_played: (playerId: string, cardId: string, targetPlayerId?: string) => void;
   card_drawn: (playerId: string) => void;
   turn_ended: (playerId: string) => void;
+  action_pending: (action: { playerId: string; cardId: string; targetPlayerId?: string; timeRemaining: number }) => void;
+  action_noped: (nopedBy: string) => void;
+  action_resolved: () => void;
 }
 
 export interface ClientToServerEvents {
@@ -92,6 +102,7 @@ export interface ClientToServerEvents {
   play_card: (cardId: string, targetPlayerId?: string) => void;
   draw_card: () => void;
   end_turn: () => void;
+  play_nope: (cardId: string) => void;
 }
 
 export interface InterServerEvents {

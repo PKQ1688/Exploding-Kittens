@@ -72,7 +72,15 @@ export function initializeGame(players: Player[]): GameState {
 
 // 抽牌
 export function drawCard(gameState: GameState, playerId: string): GameState {
-  const newState = { ...gameState };
+  const newState = {
+    ...gameState,
+    players: gameState.players.map(p => ({
+      ...p,
+      hand: [...p.hand]
+    })),
+    drawPile: [...gameState.drawPile],
+    discardPile: [...gameState.discardPile]
+  };
   const player = newState.players.find(p => p.id === playerId);
   
   if (!player || !player.isAlive || newState.drawPile.length === 0) {
@@ -95,6 +103,9 @@ export function drawCard(gameState: GameState, playerId: string): GameState {
       // 这里暂时放回顶部，实际游戏中应该让玩家选择位置
       newState.drawPile.push(drawnCard);
       newState.drawPile = shuffleDeck(newState.drawPile);
+      
+      // 使用拆弹卡后也要结束回合
+      return endTurn(newState);
     } else {
       // 玩家爆炸
       player.isAlive = false;
@@ -115,16 +126,39 @@ export function drawCard(gameState: GameState, playerId: string): GameState {
     newState.lastAction = `${player.name} 抽了一张牌`;
   }
 
+  // 抽牌后自动结束回合（除非玩家爆炸了）
+  if (player.isAlive) {
+    return endTurn(newState);
+  }
+
   return newState;
 }
 
 // 打出卡牌
 export function playCard(gameState: GameState, playerId: string, cardId: string, targetPlayerId?: string): GameState {
-  const newState = { ...gameState };
+  const newState = {
+    ...gameState,
+    players: gameState.players.map(p => ({
+      ...p,
+      hand: [...p.hand]
+    })),
+    drawPile: [...gameState.drawPile],
+    discardPile: [...gameState.discardPile]
+  };
   const player = newState.players.find(p => p.id === playerId);
   
   if (!player || !player.isAlive) {
     return newState;
+  }
+
+  // 只有轮到该玩家时才能出牌（NOPE 例外，可在任何时机打出）
+  const isPlayersTurn = newState.players[newState.currentPlayerIndex].id === playerId;
+  if (!isPlayersTurn && cardId) {
+    // 查找对应卡牌类型
+    const tempCard = player.hand.find(c => c.id === cardId);
+    if (tempCard && tempCard.type !== CardType.NOPE) {
+      return newState;
+    }
   }
 
   const cardIndex = player.hand.findIndex(card => card.id === cardId);
@@ -148,7 +182,10 @@ export function playCard(gameState: GameState, playerId: string, cardId: string,
     case CardType.ATTACK:
       player.hand.splice(cardIndex, 1);
       newState.discardPile.push(card);
-      newState.attackTurnsRemaining = 2;
+      // 计算当前尚未执行完的额外回合数 (如果为正)
+      const outstandingTurns = newState.attackTurnsRemaining > 0 ? newState.attackTurnsRemaining : 0;
+      // 下一玩家需要执行 (未完成+2) 回合，使用负值标记
+      newState.attackTurnsRemaining = -(outstandingTurns + 2);
       newState.lastAction = `${player.name} 使用了攻击卡`;
       break;
       
@@ -163,6 +200,8 @@ export function playCard(gameState: GameState, playerId: string, cardId: string,
       player.hand.splice(cardIndex, 1);
       newState.discardPile.push(card);
       newState.lastAction = `${player.name} 查看了未来`;
+      // 显示牌堆顶部3张牌
+      newState.futureCards = newState.drawPile.slice(-3).reverse(); // 取顶部3张牌
       break;
       
     case CardType.FAVOR:
@@ -180,6 +219,13 @@ export function playCard(gameState: GameState, playerId: string, cardId: string,
           newState.lastAction = `${player.name} 从 ${targetPlayer.name} 那里获得了一张牌`;
         }
       }
+      break;
+      
+    case CardType.NOPE:
+      // 简化实现：目前仅记录行为，不改变其他效果；高级逻辑可在事件层面处理
+      player.hand.splice(cardIndex, 1);
+      newState.discardPile.push(card);
+      newState.lastAction = `${player.name} 打出了否定卡 (NOPE)`;
       break;
       
     default:
@@ -209,18 +255,22 @@ export function playCard(gameState: GameState, playerId: string, cardId: string,
       break;
   }
 
+  newState.futureCards = undefined;
   return newState;
 }
 
 // 结束回合
 export function endTurn(gameState: GameState): GameState {
-  const newState = { ...gameState };
+  const newState = {
+    ...gameState,
+    players: gameState.players.map(p => ({ ...p }))
+  };
   
-  // 如果有攻击回合剩余，减少计数
+  // 如果当前玩家因 ATTACK 需要执行多次回合，先减少计数
   if (newState.attackTurnsRemaining > 0) {
     newState.attackTurnsRemaining--;
     if (newState.attackTurnsRemaining > 0) {
-      return newState; // 当前玩家继续
+      return newState; // 仍需继续其额外回合
     }
   }
   
@@ -234,5 +284,11 @@ export function endTurn(gameState: GameState): GameState {
   newState.players[newState.currentPlayerIndex].isCurrentPlayer = true;
   newState.turnCount++;
   
+  // 如果上一位玩家打出了 ATTACK, 此时 attackTurnsRemaining 为负值
+  // 将其转为正值, 代表新玩家需要进行对应的额外回合数
+  if (newState.attackTurnsRemaining < 0) {
+    newState.attackTurnsRemaining = Math.abs(newState.attackTurnsRemaining);
+  }
+
   return newState;
 }

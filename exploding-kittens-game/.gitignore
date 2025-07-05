@@ -79,7 +79,7 @@ dist
 
 # Gatsby files
 .cache/
-public
+# public - 注释掉，因为我们需要保留public目录中的某些文件
 
 # Storybook build outputs
 .out
@@ -118,3 +118,29 @@ Thumbs.db
 
 # Turbo
 .turbo
+
+# 项目特定的忽略文件
+# 服务器日志文件
+server/server.log
+server/*.log
+
+# 动态生成的配置文件
+public/server-config.js
+
+# ngrok配置文件（包含敏感信息）
+ngrok.yml
+
+# 备份文件
+*.backup
+*.bak
+*.tmp
+
+# 测试文件
+*test*.html
+connection-test.html
+room-test.html
+
+# 临时脚本和文档
+restore-*.sh
+*-summary.md
+final-*.md

@@ -2,6 +2,7 @@ import React from 'react';
 import type { GameState } from '../types/game';
 import Card from './Card';
 import './GameBoard.css';
+import { CardType } from '../types/game';
 
 interface GameBoardProps {
   gameState: GameState;
@@ -9,6 +10,9 @@ interface GameBoardProps {
   onEndTurn: () => void;
   canDrawCard: boolean;
   canEndTurn: boolean;
+  onExitGame?: () => void;
+  onCloseFutureCards?: () => void;
+  isShuffling?: boolean;
 }
 
 const GameBoard: React.FC<GameBoardProps> = ({
@@ -16,7 +20,10 @@ const GameBoard: React.FC<GameBoardProps> = ({
   onDrawCard,
   onEndTurn,
   canDrawCard,
-  canEndTurn
+  canEndTurn,
+  onExitGame,
+  onCloseFutureCards,
+  isShuffling = false
 }) => {
   const currentPlayer = gameState.players[gameState.currentPlayerIndex];
   const topDiscardCard = gameState.discardPile[gameState.discardPile.length - 1];
@@ -24,7 +31,14 @@ const GameBoard: React.FC<GameBoardProps> = ({
   return (
     <div className="game-board">
       <div className="game-board__header">
-        <h2 className="game-board__title">Exploding Kittens</h2>
+        <div className="game-board__header-top">
+          <h2 className="game-board__title">Exploding Kittens</h2>
+          {onExitGame && (
+            <button className="exit-game-button" onClick={onExitGame}>
+              ❌ 退出游戏
+            </button>
+          )}
+        </div>
         <div className="game-board__status">
           <div className="game-board__turn-info">
             回合 {gameState.turnCount} - {currentPlayer?.name} 的回合
@@ -46,12 +60,12 @@ const GameBoard: React.FC<GameBoardProps> = ({
               <div className="pile-count">{gameState.drawPile.length} 张</div>
             </div>
             <div 
-              className={`card-back ${canDrawCard ? 'card-back--clickable' : ''}`}
+              className={`card-back ${canDrawCard ? 'card-back--clickable' : ''} ${isShuffling ? 'card-back--shuffling' : ''}`}
               onClick={canDrawCard ? onDrawCard : undefined}
             >
               <div className="card-back__content">
-                <div className="card-back__emoji">🃏</div>
-                <div className="card-back__text">抽牌</div>
+                <div className="card-back__emoji">{isShuffling ? '🌪️' : '🃏'}</div>
+                <div className="card-back__text">{isShuffling ? '洗牌中...' : '抽牌'}</div>
               </div>
             </div>
           </div>
@@ -83,23 +97,60 @@ const GameBoard: React.FC<GameBoardProps> = ({
             🎴 抽牌
           </button>
           
-          <button
-            className={`action-button ${canEndTurn ? 'action-button--secondary' : 'action-button--disabled'}`}
-            onClick={onEndTurn}
-            disabled={!canEndTurn}
-          >
-            ⏭️ 结束回合
-          </button>
+          {/* 移除结束回合按钮，抽牌后自动结束回合 */}
         </div>
+
+        {gameState.futureCards && gameState.futureCards.length > 0 && (
+          <div className="future-cards-display">
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <h3>🔮 未来3张牌（从上到下）</h3>
+              {onCloseFutureCards && (
+                <button
+                  className="future-cards-close-btn"
+                  style={{ fontSize: 20, background: 'none', border: 'none', cursor: 'pointer' }}
+                  onClick={onCloseFutureCards}
+                  aria-label="关闭"
+                >❌</button>
+              )}
+            </div>
+            <div className="future-cards">
+              {gameState.futureCards.map((card, index) => (
+                <div key={`future-${index}`} className="future-card">
+                  <div className="future-card-order">第{index + 1}张</div>
+                  <div className="future-card-name">{card.name}</div>
+                  <div className="future-card-emoji">
+                    {card.type === CardType.EXPLODING_KITTEN ? '💥🐱' :
+                     card.type === CardType.DEFUSE ? '🛡️' :
+                     card.type === CardType.ATTACK ? '⚔️' :
+                     card.type === CardType.SKIP ? '⏭️' :
+                     card.type === CardType.SHUFFLE ? '🔀' :
+                     card.type === CardType.SEE_THE_FUTURE ? '🔮' :
+                     card.type === CardType.FAVOR ? '🤝' : '🐱'}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
 
       <div className="game-board__info">
         <div className="game-board__last-action">
           <strong>最后动作:</strong> {gameState.lastAction}
         </div>
-        
+
         <div className="game-board__players-alive">
           存活玩家: {gameState.players.filter(p => p.isAlive).length} / {gameState.players.length}
+        </div>
+
+        {gameState.attackTurnsRemaining > 0 && (
+          <div className="game-board__attack-status">
+            <strong>⚔️ 攻击状态:</strong> {currentPlayer.name} 需要连续进行 {gameState.attackTurnsRemaining} 个回合
+          </div>
+        )}
+
+        <div className="game-board__turn-info">
+          <strong>当前回合:</strong> {currentPlayer.name}
         </div>
       </div>
     </div>

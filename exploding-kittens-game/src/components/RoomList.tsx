@@ -24,31 +24,38 @@ const RoomList: React.FC<RoomListProps> = ({ onRoomJoined }) => {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    // 监听房间列表更新
-    socketService.on('room_list', (roomList: Room[]) => {
+    // 定义事件处理函数
+    const handleRoomList = (roomList: Room[]) => {
       setRooms(roomList);
       setIsLoading(false);
-    });
+    };
 
-    // 监听房间加入成功
-    socketService.on('room_joined', () => {
+    const handleRoomJoined = () => {
       onRoomJoined();
-    });
+    };
 
-    // 监听错误
-    socketService.on('error', (message: string) => {
+    const handleError = (message: string) => {
       setError(message);
       setIsLoading(false);
-    });
+    };
+
+    // 监听房间列表更新
+    socketService.on('room_list', handleRoomList);
+
+    // 监听房间加入成功
+    socketService.on('room_joined', handleRoomJoined);
+
+    // 监听错误
+    socketService.on('error', handleError);
 
     // 获取房间列表
     socketService.getRooms();
     setIsLoading(true);
 
     return () => {
-      socketService.off('room_list', setRooms);
-      socketService.off('room_joined', onRoomJoined);
-      socketService.off('error', setError);
+      socketService.off('room_list', handleRoomList);
+      socketService.off('room_joined', handleRoomJoined);
+      socketService.off('error', handleError);
     };
   }, [onRoomJoined]);
 
@@ -59,9 +66,26 @@ const RoomList: React.FC<RoomListProps> = ({ onRoomJoined }) => {
       return;
     }
 
+    console.log('开始创建房间:', { roomName: roomName.trim(), playerName: playerName.trim() });
     setIsLoading(true);
     setError(null);
+    
+    // 检查连接状态
+    if (!socketService.isConnected()) {
+      setError('与服务器断开连接，请刷新页面重试');
+      setIsLoading(false);
+      return;
+    }
+    
     socketService.createRoom(roomName.trim(), playerName.trim());
+    
+    // 设置超时检查
+    setTimeout(() => {
+      if (isLoading) {
+        setError('创建房间超时，请检查网络连接');
+        setIsLoading(false);
+      }
+    }, 10000);
   };
 
   const handleJoinRoom = (roomId: string) => {

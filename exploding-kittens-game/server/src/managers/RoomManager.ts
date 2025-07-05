@@ -23,7 +23,7 @@ export class RoomManager {
       name: roomName,
       players: [creator],
       gameState: null,
-      maxPlayers: 5,
+      maxPlayers: 4,
       isGameStarted: false,
       createdAt: new Date()
     };

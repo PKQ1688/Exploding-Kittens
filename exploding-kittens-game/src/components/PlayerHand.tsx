@@ -1,5 +1,6 @@
 import React from 'react';
 import type { Player, Card as CardType } from '../types/game';
+import { CardType as CardTypeEnum } from '../types/game';
 import Card from './Card';
 import './PlayerHand.css';
 
@@ -19,9 +20,29 @@ const PlayerHand: React.FC<PlayerHandProps> = ({
   canPlayCards = false
 }) => {
   const handleCardClick = (card: CardType) => {
-    if (onCardClick && canPlayCards && isCurrentPlayer) {
+    if (onCardClick && isCurrentPlayer && canPlayCards) {
       onCardClick(card.id);
     }
+  };
+
+  const isCardPlayable = (card: CardType): boolean => {
+    if (!isCurrentPlayer || !canPlayCards) return false;
+
+    // 检查特殊卡牌的可玩性
+    const catCardTypes = [
+      CardTypeEnum.CAT_TACOCAT, 
+      CardTypeEnum.CAT_CATTERMELON, 
+      CardTypeEnum.CAT_HAIRY_POTATO, 
+      CardTypeEnum.CAT_RAINBOW_RALPHING, 
+      CardTypeEnum.CAT_BEARD
+    ];
+    if (catCardTypes.includes(card.type)) {
+      // 猫咪卡需要成对才能打出
+      const matchingCards = player.hand.filter(c => c.type === card.type);
+      return matchingCards.length >= 2;
+    }
+
+    return true;
   };
 
   const playerHandClasses = [
@@ -44,16 +65,25 @@ const PlayerHand: React.FC<PlayerHandProps> = ({
       </div>
       
       <div className="player-hand__cards">
-        {player.hand.map((card) => (
-          <Card
-            key={card.id}
-            card={card}
-            isPlayable={canPlayCards && isCurrentPlayer}
-            isSelected={selectedCardId === card.id}
-            onClick={() => handleCardClick(card)}
-            size="medium"
-          />
-        ))}
+        {isCurrentPlayer
+          ? player.hand.map((card) => (
+              <Card
+                key={card.id}
+                card={card}
+                isPlayable={isCardPlayable(card)}
+                isSelected={selectedCardId === card.id}
+                onClick={() => handleCardClick(card)}
+                size="medium"
+              />
+            ))
+          : Array.from({ length: player.hand.length }).map((_, idx) => (
+              <div
+                key={idx}
+                className="card card--back"
+                style={{ width: 60, height: 90, margin: '0 4px', display: 'inline-block', background: '#444', borderRadius: 8 }}
+                title="未知手牌"
+              />
+            ))}
         
         {player.hand.length === 0 && player.isAlive && (
           <div className="player-hand__empty">

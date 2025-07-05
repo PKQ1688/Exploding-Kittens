@@ -13,6 +13,32 @@
   margin-bottom: 24px;
 }
 
+.game-board__header-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.exit-game-button {
+  background: linear-gradient(45deg, #ff6b6b, #ee5a52);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 16px;
+  font-size: 0.9em;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3);
+}
+
+.exit-game-button:hover {
+  background: linear-gradient(45deg, #ee5a52, #ff6b6b);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(255, 107, 107, 0.4);
+}
+
 .game-board__title {
   font-size: 2.5em;
   margin: 0 0 16px 0;
@@ -44,6 +70,7 @@
   border-radius: 20px;
   font-weight: bold;
   backdrop-filter: blur(10px);
+  color: #333;
 }
 
 .game-board__attack-warning {
@@ -116,6 +143,29 @@
   transform: translateY(-4px) scale(1.05);
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
   border-color: #1e3a8a;
+}
+
+.card-back--shuffling {
+  animation: shuffleAnimation 0.5s ease-in-out infinite alternate;
+  background: linear-gradient(135deg, #ff6b6b 0%, #feca57 50%, #48dbfb 100%);
+  background-size: 200% 200%;
+  animation: shuffleAnimation 0.5s ease-in-out infinite alternate, 
+             shuffleGradient 1s ease-in-out infinite;
+}
+
+@keyframes shuffleAnimation {
+  0% { 
+    transform: rotate(-3deg) scale(0.98);
+  }
+  100% { 
+    transform: rotate(3deg) scale(1.02);
+  }
+}
+
+@keyframes shuffleGradient {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
 }
 
 .card-back__content {
@@ -208,16 +258,45 @@
   padding: 16px;
   margin-top: 24px;
   backdrop-filter: blur(10px);
+  color: #333;
 }
 
 .game-board__last-action {
   margin-bottom: 8px;
   font-size: 1.1em;
+  background: #f8f9fa;
+  padding: 12px;
+  border-radius: 8px;
+  border-left: 4px solid #007bff;
+  color: #333;
+}
+
+.game-board__attack-status {
+  background: #ffe6e6;
+  padding: 12px;
+  border-radius: 8px;
+  border-left: 4px solid #ff4444;
+  margin-bottom: 8px;
+  color: #cc0000;
+  font-weight: bold;
+}
+
+.game-board__turn-info {
+  background: #e6f3ff;
+  padding: 12px;
+  border-radius: 8px;
+  border-left: 4px solid #007bff;
+  margin-bottom: 8px;
+  color: #333;
 }
 
 .game-board__players-alive {
   font-weight: bold;
-  color: #feca57;
+  color: #333;
+  background: rgba(254, 202, 87, 0.3);
+  padding: 8px;
+  border-radius: 8px;
+  margin-bottom: 8px;
 }
 
 /* 响应式设计 */
@@ -226,31 +305,51 @@
     padding: 16px;
     margin: 8px;
   }
-  
+
   .game-board__title {
     font-size: 2em;
   }
-  
+
+  .game-board__header-top {
+    flex-direction: column;
+    gap: 12px;
+    align-items: center;
+  }
+
+  .exit-game-button {
+    font-size: 0.8em;
+    padding: 6px 12px;
+  }
+
   .game-board__piles {
     gap: 24px;
   }
-  
+
   .game-board__actions {
     flex-direction: column;
     width: 100%;
   }
-  
+
   .action-button {
     width: 100%;
   }
 }
 
 @media (max-width: 480px) {
+  .game-board__header-top {
+    gap: 8px;
+  }
+
+  .exit-game-button {
+    font-size: 0.75em;
+    padding: 4px 8px;
+  }
+
   .game-board__piles {
     flex-direction: column;
     gap: 16px;
   }
-  
+
   .game-board__status {
     flex-direction: column;
     gap: 12px;

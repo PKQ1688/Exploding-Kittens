@@ -1,10 +1,11 @@
 import type { Card } from '../types/game';
 import { CardType } from '../types/game';
+import { v4 as uuidv4 } from 'uuid';
 
 // 创建卡牌的工厂函数
 function createCard(type: CardType, name: string, description: string, count: number): Card {
   return {
-    id: `${type}_${Math.random().toString(36).substr(2, 9)}`,
+    id: uuidv4(),
     type,
     name,
     description,
